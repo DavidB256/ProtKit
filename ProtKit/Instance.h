@@ -22,7 +22,7 @@ public:
     // Stores user-defined functions
     unordered_map <string, vector<string>> funcs;
     // Stores name and version number
-	string version = "ProtKit v0.10";
+	string version = "ProtKit v0.20";
     // Pointer to `Config` object that stores info from config file at path `config_file`
     Config* config;
     // Loads constants from `Vars` class
