@@ -1,0 +1,2 @@
+wd=C:\\Users\\David\\Desktop\\ProtKit workspace
+op=output.pdb
