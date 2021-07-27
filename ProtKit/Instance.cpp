@@ -54,6 +54,9 @@ void Instance::process_input(string line, ifstream& f) {
         active_index = loaded_files.size() - 1;
     }
     else if (command == "print_AA") {
+        if (get_whether_loaded_files_is_too_short(loaded_files, 1))
+            return;
+
         loaded_files[active_index]->print_AA_seq();
     }
     else if (command == "list_loaded") {
@@ -67,9 +70,15 @@ void Instance::process_input(string line, ifstream& f) {
         }
     }
     else if (command == "write_fasta") {
+        if (get_whether_loaded_files_is_too_short(loaded_files, 1))
+            return;
+
         loaded_files[active_index]->write_fasta(get_nth_word_from_string(line, 2));
     }
     else if (command == "back") {
+        if (get_whether_loaded_files_is_too_short(loaded_files, 1))
+            return;
+
         // Decrements `active_index` to point to previously-loaded file
         if (active_index != 0) {
             active_index--;
@@ -80,6 +89,9 @@ void Instance::process_input(string line, ifstream& f) {
         }
     }
     else if (command == "forward") {
+        if (get_whether_loaded_files_is_too_short(loaded_files, 1))
+            return;
+
         // Increments `active_index` to point to next-loaded file
         if (active_index != loaded_files.size() - 1) {
             active_index++;
@@ -95,12 +107,16 @@ void Instance::process_input(string line, ifstream& f) {
         for (unsigned int i = 0; i < loaded_files.size(); i++) {
             if (loaded_files[i]->get_name() == file_name) {
                 active_index = i;
-                cout << "Loaded " << file_name << endl;
+                cout << file_name << " is now active." << endl;
                 break;
             }
         }
+        cout << "File not found." << endl;
     }
     else if (command == "del_active") {
+        if (get_whether_loaded_files_is_too_short(loaded_files, 1))
+            return;
+
         // Deletes active file from `loaded_files`
         if (loaded_files.size()) {
             cout << "Deleted " << loaded_files[active_index]->get_name() << endl;
@@ -110,11 +126,17 @@ void Instance::process_input(string line, ifstream& f) {
         }
     }
     else if (command == "print_active") {
+        if (get_whether_loaded_files_is_too_short(loaded_files, 1))
+            return;
+
         // Prints the name of the active file in `loaded_files`, if there is one
         if (loaded_files.size())
             cout << "The active file is " << loaded_files[active_index]->get_name() << endl;
     }
     else if (command == "print_3_letter_AA_seq") {
+        if (get_whether_loaded_files_is_too_short(loaded_files, 1))
+            return;
+
         // Prints AA sequence of active file with space-separated 3-letter codes
         for (char i : loaded_files[active_index]->get_AA_seq())
             cout << v.AA_codes_1_to_3_map[i] << " ";
@@ -124,19 +146,30 @@ void Instance::process_input(string line, ifstream& f) {
         // Writes latest entry in `working_files_vector` to a .pdb file in `working_directory`
         working_files_vector.back()->write_file(get_nth_word_from_string(line, 2));
     }
-    else if (line == "self") {
-        working_files_vector.back()->append_file(Pdb(loaded_files[active_index]->get_atom_lines()));
+    else if (command == "self") {
+        if (get_whether_loaded_files_is_too_short(loaded_files, 1))
+            return;
+
+        // Appends copy of active file to latest entry in `working_files_vector`
+        // Equivalent to, e.g., "add_vector 0 0 0" or "mult_matrix 1 0 0 / 0 1 0 / 0 0 1
+        working_files_vector.back()->append(Pdb(loaded_files[active_index]->get_atom_lines()));
     }
     else if (command == "add_vector") {
+        if (get_whether_loaded_files_is_too_short(loaded_files, 1))
+            return;
+
         // Get translation vector from input
         vector<double> col_vector(3);
         for (int i = 0; i < 3; i++)
             col_vector[i] = stod(get_nth_word_from_string(line, i + 2));
 
         // Append translated `AtomLine` objects to `atom_lines` of latest element in `working_files_vector`
-        working_files_vector.back()->append_file(Pdb(loaded_files[active_index]->add_vector(col_vector)));
+        working_files_vector.back()->append(Pdb(loaded_files[active_index]->add_vector(col_vector)));
     }
     else if (command == "mult_matrix") {
+        if (get_whether_loaded_files_is_too_short(loaded_files, 1))
+            return;
+
         // Get matrix from input
         vector<vector<double>> sq_matrix(3, vector<double>(3));
         for (int i = 0; i < 3; i++) {
@@ -146,40 +179,28 @@ void Instance::process_input(string line, ifstream& f) {
         }
 
         // Append transformed `AtomLine` objects to `atom_lines` of latest element in `working_files_vector`
-        working_files_vector.back()->append_file(Pdb(loaded_files[active_index]->mult_matrix(sq_matrix)));
+        working_files_vector.back()->append(Pdb(loaded_files[active_index]->mult_matrix(sq_matrix)));
     }
     else if (command == "axis_rotate") {
+        if (get_whether_loaded_files_is_too_short(loaded_files, 1))
+            return;
+
         // Get variables from input: axis vector, point that vector goes through, and angle of rotation
         vector<double> axis(3);
         vector<double> point(3);
-        vector<double> neg_point(3);
         for (int i = 0; i < 3; i++) {
             axis[i] = stod(get_nth_word_from_string(line, i + 2));
             point[i] = stod(get_nth_word_from_string(line, i + 6));
-            // `neg_point` is needed to translate the atom before performing the rotation, after which `point` is used for reverse translation
-            neg_point[i] = -1 * point[i];
         }
-
         double angle = stod(get_nth_word_from_string(line, 10));
 
-        // Create rotation matrix from formula found here: https://en.wikipedia.org/wiki/Rotation_matrix#Rotation_matrix_from_axis_and_angle
-        axis = normalize_double_vector(axis);
-        double ux2 = pow(axis[0], 2);
-        double uy2 = pow(axis[1], 2);
-        double uz2 = pow(axis[2], 2);
-        double c = cos(angle);
-        double cc = 1 - c;
-        double s = sin(angle);
-
-        vector<vector<double>> sq_matrix =
-        { {c + (ux2 * cc), (axis[0] * axis[1] * cc) - (axis[2] * s), (axis[0] * axis[2] * cc) + (axis[1] * s)},
-          {(axis[0] * axis[1] * cc) + (axis[2] * s), c + (uy2 * cc), (axis[1] * axis[2] * cc) - (axis[0] * s)},
-          {(axis[0] * axis[2] * cc) - (axis[1] * s), (axis[1] * axis[2] * cc) + (axis[0] * s), c + (uz2 * cc)} };
-
         // Append transformed `AtomLine` objects to `atom_lines` of latest element in `working_files_vector`
-        working_files_vector.back()->append_file(Pdb(Pdb(Pdb(loaded_files[active_index]->add_vector(neg_point)).mult_matrix(sq_matrix)).add_vector(point)));
+        working_files_vector.back()->append(Pdb(loaded_files[active_index]->axis_rotate(axis, point, angle)));
     }
     else if (command == "move_to") {
+        if (get_whether_loaded_files_is_too_short(loaded_files, 1))
+            return;
+
         vector<double> mean_coords = loaded_files[active_index]->get_mean_atom_coords();
         // Get destination vector from input and subtract `mean_coords`, current mean location of the protein, from each entry
         vector<double> col_vector(3);
@@ -187,11 +208,33 @@ void Instance::process_input(string line, ifstream& f) {
             col_vector[i] = stod(get_nth_word_from_string(line, i + 2)) - mean_coords[i];
 
         // Append translated `AtomLine` objects to `atom_lines` of latest element in `working_files_vector`
-        working_files_vector.back()->append_file(Pdb(loaded_files[active_index]->add_vector(col_vector)));
+        working_files_vector.back()->append(Pdb(loaded_files[active_index]->add_vector(col_vector)));
+    }
+    else if (command == "center") {
+        // Translates active protein such that its center is at the origin
+        // Equivalent to "move_to 0 0 0"
+        if (get_whether_loaded_files_is_too_short(loaded_files, 1))
+            return;
+
+        vector<double> col_vector = loaded_files[active_index]->get_mean_atom_coords();
+        for (double& i : col_vector)
+            i *= -1;
+
+        working_files_vector.back()->append(Pdb(loaded_files[active_index]->add_vector(col_vector)));
+    }
+    else if (command == "align") {
+        if (get_whether_loaded_files_is_too_short(loaded_files, 2))
+            return;
+
+        Pdb temp1(loaded_files[active_index - 1]->get_atom_lines());
+        Pdb temp2(loaded_files[active_index]->get_atom_lines());
+
+        working_files_vector.back()->append(Pdb(temp1.align_by_first_Cas(temp2)));
     }
     else if (command == "load_working") {
         // Load latest entry in `working_files_vector` into `loaded_files`, making it the new file to be acted upon by commands
-        loaded_files.push_back(new Pdb(to_string(loaded_files.size()) + "_" + config->default_output_pdb, working_files_vector.back()->get_atom_lines()));
+        loaded_files.push_back(new Pdb(to_string(loaded_files.size()) + "_" +
+            config->default_output_pdb, working_files_vector.back()->get_atom_lines()));
         active_index = loaded_files.size() - 1;
     }
     else if (line == "" || line.find("/") == 0) {

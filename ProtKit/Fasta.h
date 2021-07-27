@@ -31,6 +31,6 @@ public:
 	void append_file(Fasta file) { AA_seq += file.AA_seq; };
 
 private:
-	string name = "";
+	string name;
 	string AA_seq = "";
 };

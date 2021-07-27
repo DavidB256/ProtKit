@@ -25,6 +25,8 @@ public:
 		"mult_matrix <rotation 3x3 matrix>\n"
 		"axis_rotate <axis 3-vector, point 3-vector, angle number>\n"
 		"move_to <destination 3-vector>\n"
+		"center\n"
+		"align\n"
 		"load_working";
 	unordered_map <string, char> AA_codes_3_to_1_map = { {"ALA", 'A'},{"ARG", 'R'},{"ASN", 'N'},{"ASP", 'D'},{"CYS", 'C'},
 		{"GLU", 'E'},{"GLN", 'Q'},{"GLY", 'G'},{"HIS", 'H'},{"ILE", 'I'},
