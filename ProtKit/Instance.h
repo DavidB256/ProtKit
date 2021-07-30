@@ -24,7 +24,7 @@ public:
     // Stores name and version number
 	string version = "ProtKit v0.20";
     // Pointer to `Config` object that stores info from config file at path `config_file`
-    Config* config;
+    Config* cnfg;
     // Loads constants from `Vars` class
     Vars v;
 };

@@ -7,7 +7,7 @@ Instance::Instance(string config_file) {
     // Print name and version
     cout << version << endl;
     // Read config file into `Config` object pointer `config`
-    config = new Config(config_file);
+    cnfg = new Config(config_file);
     // Add "empty" `Pdb` object to `working_files_vector`
     working_file = new Pdb(vector<AtomLine>());
 }
@@ -17,7 +17,7 @@ Instance::~Instance() {
     for (ProtFile* i : loaded_files)
         delete i;
     delete working_file;
-    delete config;
+    delete cnfg;
 }
 
 void Instance::process_input(string line, ifstream& f) {
@@ -25,7 +25,18 @@ void Instance::process_input(string line, ifstream& f) {
 
     // Identify command from input and act accordingly
     if (command == "help") {
+        // Print help menu
         cout << v.help_menu << endl;
+    }
+    else if (command == "set_wd") {
+        // Change the working directory, with error handling for invalid path variables
+        try {
+            filesystem::current_path(get_nth_word_from_string(line, 2));
+        }
+        catch (int e) {
+            (void)e;
+            cout << "Invalid path input. The working directory has not been changed." << endl;
+        }
     }
     else if (command == "s" || command == "script") {
         // Run commands from script
@@ -222,7 +233,7 @@ void Instance::process_input(string line, ifstream& f) {
     else if (command == "load_working") {
         // Load latest entry in `working_files_vector` into `loaded_files`, making it the new file to be acted upon by commands
         loaded_files.push_back(new Pdb(to_string(loaded_files.size()) + "_" +
-            config->default_output_pdb, working_file->get_atom_lines()));
+            cnfg->default_output_pdb, working_file->get_atom_lines()));
         active_index = loaded_files.size() - 1;
     }
     else if (line == "" || line.find("/") == 0) {

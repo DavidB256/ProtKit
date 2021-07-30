@@ -20,8 +20,8 @@ public:
                     catch (int e) {
                         (void)e;
                         cout << "Invalid working directory for config file." << endl <<
-                            "Assuming default working directory: " << working_directory << endl;
-                        filesystem::current_path(working_directory);
+                            "Assuming default working directory: " << default_working_directory << endl;
+                        filesystem::current_path(default_working_directory);
                     }
                 }
                 // Set name of default output file of write functions for .pdb files
@@ -33,12 +33,12 @@ public:
         // Default actions taken if the config file is not found
         else {
             cout << "Config file not found." << endl <<
-                "Assuming default wording directory: " << working_directory << endl;
+                "Assuming default wording directory: " << default_working_directory << endl;
             filesystem::current_path(working_directory);
         }
         f.close();
 	}
 
-    string working_directory = "C:\\Users\\Public\\";
+    string default_working_directory = "C:\\Users\\Public\\";
     string default_output_pdb = "output.pdb";
 };

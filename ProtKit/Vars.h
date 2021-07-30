@@ -7,6 +7,7 @@ public:
 	string help_menu = 
 		"quit\n"
 		"reset\n"
+		"set_wd\n"
 		"script <input file_name>\n"
 		"help\n"
 		"load <input file_name>\n"
@@ -26,8 +27,7 @@ public:
 		"axis_rotate <axis 3-vector, point 3-vector, angle number>\n"
 		"move_to <destination 3-vector>\n"
 		"center\n"
-		"align\n"
-		"load_working";
+		"load_working\n";
 	unordered_map <string, char> AA_codes_3_to_1_map = { {"ALA", 'A'},{"ARG", 'R'},{"ASN", 'N'},{"ASP", 'D'},{"CYS", 'C'},
 		{"GLU", 'E'},{"GLN", 'Q'},{"GLY", 'G'},{"HIS", 'H'},{"ILE", 'I'},
 		{"LEU", 'L'},{"LYS", 'K'},{"MET", 'M'},{"PHE", 'F'},{"PRO", 'P'},
