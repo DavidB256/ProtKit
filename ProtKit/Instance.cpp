@@ -9,17 +9,14 @@ Instance::Instance(string config_file) {
     // Read config file into `Config` object pointer `config`
     config = new Config(config_file);
     // Add "empty" `Pdb` object to `working_files_vector`
-    working_files_vector.push_back(new Pdb(vector<AtomLine>()));
+    working_file = new Pdb(vector<AtomLine>());
 }
 
 // Instance destructor
 Instance::~Instance() {
-    for (ProtFile* i : loaded_files) {
+    for (ProtFile* i : loaded_files)
         delete i;
-    }
-    for (Pdb* i : working_files_vector) {
-        delete i;
-    }
+    delete working_file;
     delete config;
 }
 
@@ -144,7 +141,7 @@ void Instance::process_input(string line, ifstream& f) {
     }
     else if (command == "write_file") {
         // Writes latest entry in `working_files_vector` to a .pdb file in `working_directory`
-        working_files_vector.back()->write_file(get_nth_word_from_string(line, 2));
+        working_file->write_file(get_nth_word_from_string(line, 2));
     }
     else if (command == "self") {
         if (get_whether_loaded_files_is_too_short(loaded_files, 1))
@@ -152,7 +149,7 @@ void Instance::process_input(string line, ifstream& f) {
 
         // Appends copy of active file to latest entry in `working_files_vector`
         // Equivalent to, e.g., "add_vector 0 0 0" or "mult_matrix 1 0 0 / 0 1 0 / 0 0 1
-        working_files_vector.back()->append(Pdb(loaded_files[active_index]->get_atom_lines()));
+        working_file->append(Pdb(loaded_files[active_index]->get_atom_lines()));
     }
     else if (command == "add_vector") {
         if (get_whether_loaded_files_is_too_short(loaded_files, 1))
@@ -164,7 +161,7 @@ void Instance::process_input(string line, ifstream& f) {
             col_vector[i] = stod(get_nth_word_from_string(line, i + 2));
 
         // Append translated `AtomLine` objects to `atom_lines` of latest element in `working_files_vector`
-        working_files_vector.back()->append(Pdb(loaded_files[active_index]->add_vector(col_vector)));
+        working_file->append(Pdb(loaded_files[active_index]->add_vector(col_vector)));
     }
     else if (command == "mult_matrix") {
         if (get_whether_loaded_files_is_too_short(loaded_files, 1))
@@ -179,7 +176,7 @@ void Instance::process_input(string line, ifstream& f) {
         }
 
         // Append transformed `AtomLine` objects to `atom_lines` of latest element in `working_files_vector`
-        working_files_vector.back()->append(Pdb(loaded_files[active_index]->mult_matrix(sq_matrix)));
+        working_file->append(Pdb(loaded_files[active_index]->mult_matrix(sq_matrix)));
     }
     else if (command == "axis_rotate") {
         if (get_whether_loaded_files_is_too_short(loaded_files, 1))
@@ -195,7 +192,7 @@ void Instance::process_input(string line, ifstream& f) {
         double angle = stod(get_nth_word_from_string(line, 10));
 
         // Append transformed `AtomLine` objects to `atom_lines` of latest element in `working_files_vector`
-        working_files_vector.back()->append(Pdb(loaded_files[active_index]->axis_rotate(axis, point, angle)));
+        working_file->append(Pdb(loaded_files[active_index]->axis_rotate(axis, point, angle)));
     }
     else if (command == "move_to") {
         if (get_whether_loaded_files_is_too_short(loaded_files, 1))
@@ -208,7 +205,7 @@ void Instance::process_input(string line, ifstream& f) {
             col_vector[i] = stod(get_nth_word_from_string(line, i + 2)) - mean_coords[i];
 
         // Append translated `AtomLine` objects to `atom_lines` of latest element in `working_files_vector`
-        working_files_vector.back()->append(Pdb(loaded_files[active_index]->add_vector(col_vector)));
+        working_file->append(Pdb(loaded_files[active_index]->add_vector(col_vector)));
     }
     else if (command == "center") {
         // Translates active protein such that its center is at the origin
@@ -220,21 +217,12 @@ void Instance::process_input(string line, ifstream& f) {
         for (double& i : col_vector)
             i *= -1;
 
-        working_files_vector.back()->append(Pdb(loaded_files[active_index]->add_vector(col_vector)));
-    }
-    else if (command == "align") {
-        if (get_whether_loaded_files_is_too_short(loaded_files, 2))
-            return;
-
-        Pdb temp1(loaded_files[active_index - 1]->get_atom_lines());
-        Pdb temp2(loaded_files[active_index]->get_atom_lines());
-
-        working_files_vector.back()->append(Pdb(temp1.align_by_first_Cas(temp2)));
+        working_file->append(Pdb(loaded_files[active_index]->add_vector(col_vector)));
     }
     else if (command == "load_working") {
         // Load latest entry in `working_files_vector` into `loaded_files`, making it the new file to be acted upon by commands
         loaded_files.push_back(new Pdb(to_string(loaded_files.size()) + "_" +
-            config->default_output_pdb, working_files_vector.back()->get_atom_lines()));
+            config->default_output_pdb, working_file->get_atom_lines()));
         active_index = loaded_files.size() - 1;
     }
     else if (line == "" || line.find("/") == 0) {

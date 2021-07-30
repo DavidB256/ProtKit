@@ -17,8 +17,8 @@ public:
     vector<ProtFile*> loaded_files;
     // Stores active index of `loaded_files`
     unsigned int active_index = 0;
-    // Stores .pdb files being modified
-    vector<Pdb*> working_files_vector;
+    // Stores .pdb file being modified
+    Pdb* working_file;
     // Stores user-defined functions
     unordered_map <string, vector<string>> funcs;
     // Stores name and version number

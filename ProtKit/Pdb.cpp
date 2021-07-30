@@ -174,6 +174,8 @@ vector<AtomLine> Pdb::axis_rotate(vector<double> axis, vector<double> point, dou
     return Pdb(Pdb(add_vector(neg_point)).mult_matrix(sq_matrix)).add_vector(point);
 }
 
+// This is an incomplete rough draft of a structure alignment method
+// Nothing calls this method
 vector<AtomLine> Pdb::align_by_first_Cas(Pdb alignee) {
     if (AA_seq.length() < 3 || alignee.AA_seq.length() < 3) {
         cout << "Both template and alignee must have at least be three residues long to execute this function." << endl;
