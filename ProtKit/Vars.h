@@ -12,7 +12,7 @@ public:
 		"help\n"
 		"load <input file_name>\n"
 		"print_AA\n"
-		"list_loaded\n"
+		"print_loaded\n"
 		"write_fasta <output file_name>\n"
 		"back\n"
 		"forward\n"
@@ -27,7 +27,9 @@ public:
 		"axis_rotate <axis 3-vector, point 3-vector, angle number>\n"
 		"move_to <destination 3-vector>\n"
 		"center\n"
-		"load_working\n";
+		"print_rmsd\n"
+		"print_tm_score\n"
+		"load_working";
 	unordered_map <string, char> AA_codes_3_to_1_map = { {"ALA", 'A'},{"ARG", 'R'},{"ASN", 'N'},{"ASP", 'D'},{"CYS", 'C'},
 		{"GLU", 'E'},{"GLN", 'Q'},{"GLY", 'G'},{"HIS", 'H'},{"ILE", 'I'},
 		{"LEU", 'L'},{"LYS", 'K'},{"MET", 'M'},{"PHE", 'F'},{"PRO", 'P'},

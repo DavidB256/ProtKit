@@ -1,11 +1,11 @@
 #pragma once
-#include "ProtFile.h"
+#include <iostream>
 #include "AtomLine.h"
-#include "UtilityFunctions.h"
 #include "Vars.h"
+#include "Fncs.h"
 using namespace std;
 
-class Pdb : public ProtFile {
+class Pdb {
 public:
 	Pdb(string file_name);
 	// Constructor for creating object from `AtomLine` vector
@@ -15,7 +15,7 @@ public:
 	vector<AtomLine> get_atom_lines() { return atom_lines; };
 	string get_name() { return name; };
 	string get_AA_seq() { return AA_seq; };
-	void print_AA_seq() { cout << AA_seq << endl << "Length: " << AA_seq.length() << endl; };
+	vector<unsigned int> get_CA_indices() { return CA_indices; }
 	void write_fasta(string file_name);
 	vector<double> get_mean_atom_coords();
 	void write_file(string file_name);
@@ -23,13 +23,16 @@ public:
 	vector<AtomLine> add_vector(vector<double> col_vector);
 	vector<AtomLine> mult_matrix(vector<vector<double>> sq_matrix);
 	vector<AtomLine> axis_rotate(vector<double> axis_vector, vector<double> point, double angle);
-	vector<AtomLine> align_by_first_Cas(Pdb alignee);
+	//vector<AtomLine> align_by_first_CAs(Pdb alignee);
 
 private:
 	void load_AA_seq();
-	vector<unsigned int> get_first_n_alpha_Ca_indices(unsigned int n);
+	void load_CA_indices();
 
 	vector<AtomLine> atom_lines;
 	string name;
 	string AA_seq;
+	vector<unsigned int> CA_indices;
+
+	friend class Fncs;
 };

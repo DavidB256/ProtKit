@@ -6,12 +6,10 @@
 #include <stack>
 #include <filesystem>
 #include "Vars.h"
-#include "ProtFile.h"
 #include "Pdb.h"
-#include "Fasta.h"
 #include "Config.h"
 #include "AtomLine.h"
-#include "UtilityFunctions.h"
+#include "Fncs.h"
 #include "Instance.h"
 using namespace std;
 
@@ -33,7 +31,7 @@ int main() {
 
     while (true) {
         // Get user input from `cin` or loaded script file
-        line = get_input(f);
+        line = Fncs::get_input(f);
         if (line == "q" || line == "quit") {
             // Quit when asked
             break;

@@ -37,4 +37,5 @@ private:
 	double b_factor;
 
 	friend class Pdb;
+	friend class Fncs;
 };

@@ -3,6 +3,7 @@
 #include <string>
 #include <sstream>
 #include "Pdb.h"
+#include "VectorFunctions.h"
 using namespace std;
 
 
@@ -176,14 +177,15 @@ vector<AtomLine> Pdb::axis_rotate(vector<double> axis, vector<double> point, dou
 
 // This is an incomplete rough draft of a structure alignment method
 // Nothing calls this method
-vector<AtomLine> Pdb::align_by_first_Cas(Pdb alignee) {
+/*
+vector<AtomLine> Pdb::align_by_first_CAs(Pdb alignee) {
     if (AA_seq.length() < 3 || alignee.AA_seq.length() < 3) {
         cout << "Both template and alignee must have at least be three residues long to execute this function." << endl;
         return vector<AtomLine>();
     }
 
-    vector<unsigned int> template_Ca_indices = get_first_n_alpha_Ca_indices(3);
-    vector<unsigned int> alignee_Ca_indices = alignee.get_first_n_alpha_Ca_indices(3);
+    vector<unsigned int> template_Ca_indices = get_first_n_CA_indices(3);
+    vector<unsigned int> alignee_Ca_indices = alignee.get_first_n_CA_indices(3);
 
     vector<double> diff_between_first_Ca = subtract_vectors(
         atom_lines[template_Ca_indices[0]].coordinates,
@@ -206,6 +208,7 @@ vector<AtomLine> Pdb::align_by_first_Cas(Pdb alignee) {
 
     return align_step2.atom_lines;
 }
+*/
 
 // Sets `AA_seq` by loading it from `atom_lines`
 // Called from constructor methods
@@ -225,23 +228,14 @@ void Pdb::load_AA_seq() {
     AA_seq = seq;
 }
 
-// Return vector of indices of first `n` alpha carbons in `atom_lines`, or fewer if there are fewer than `n` residues
-vector<unsigned int> Pdb::get_first_n_alpha_Ca_indices(unsigned int n) {
-    unsigned int residue_counter = 0;
-    vector<unsigned int> Ca_indices;
+// Populates `CA_indices` with the indices in `atom_lines` of all alpha carbon atoms
+void Pdb::load_CA_indices() {
+    // Instantly return if `CA_indices` has already been loaded
+    if (CA_indices.size())
+        return;
 
     for (unsigned int i = 0; i < atom_lines.size(); i++) {
-        if (atom_lines[i].atom_name == "CA") {
-            Ca_indices.push_back(i);
-            residue_counter++;
-        }
-        if (residue_counter > n - 1)
-            break;
+        if (atom_lines[i].atom_name == "CA")
+            CA_indices.push_back(i);
     }
-
-    // Print error statement if there are fewer than `n` residues
-    if (residue_counter < n)
-        cout << "Only " << residue_counter - 1 << " alpha carbons could be found." << endl;
-
-    return Ca_indices;
 }
