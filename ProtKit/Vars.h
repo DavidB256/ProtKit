@@ -7,9 +7,9 @@ public:
 	string help_menu = 
 		"quit\n"
 		"reset\n"
+		"reset_working\n"
 		"set_wd\n"
 		"script <input file_name>\n"
-		"help\n"
 		"load <input file_name>\n"
 		"print_AA\n"
 		"print_loaded\n"

@@ -118,9 +118,8 @@ void Pdb::append(Pdb appendee) {
         last_chain = 64;
     
     // Add `last_chain` to all `i.chain` values while keeping `i.chain` within the interval of the uppercase letters in ASCII code, [65, 90]
-    for (AtomLine& i : appendee.atom_lines) {
-        i.chain = ((i.chain - 65 + last_chain - 64) % 26) + 65;
-    }
+    for (AtomLine& i : appendee.atom_lines)
+        i.chain = (((i.chain - 65) + (last_chain - 65) + 1) % 26) + 65;
 
     // Do the appending
     atom_lines.insert(atom_lines.end(), appendee.atom_lines.begin(), appendee.atom_lines.end());

@@ -36,13 +36,14 @@ int main() {
             // Quit when asked
             break;
         }
-        else if (line == "r" || line == "reset") {
-            cout << "Instance reset." << endl;
+        else if (line == "reset" || line == "re") {
             // Restore initial working directory so that the config file can be found again in the `Instance` constructor
             filesystem::current_path(initial_directory);
             // Calls deconstructor and creates new `Instance` object pointer
             delete in;
             in = new Instance(config_file);
+
+            cout << "Instance reset." << endl;
         }
         else {
             // Run all other commands from `process_input` method of `Instance`

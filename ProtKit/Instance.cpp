@@ -31,6 +31,12 @@ void Instance::process_input(string line, ifstream& f) {
         // Print help menu
         cout << v.help_menu << endl;
     }
+    else if (line == "reset_working" || line == "rw") {
+        // Delete and reinitialize `working_file`
+        delete working_file;
+        working_file = new Pdb(vector<AtomLine>());
+        cout << "Working file reset." << endl;
+    }
     else if (command == "set_wd") {
         // Change the working directory, with error handling for invalid path variables
         try {
