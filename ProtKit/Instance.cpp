@@ -253,8 +253,21 @@ void Instance::process_input(string line, ifstream& f) {
         cout << get_tm_score(loaded_files[active_index - 1], loaded_files[active_index]) << endl;
     }
     else if (command == "print_bounds") {
-        //vector<double> min_point = loaded_files[active_index]->get_atom_lines();
-        vector<double> max_point(3);
+        // Prints points of diagonally-opposite corners of minimal rectangular prism surrounding protein
+        vector<double> min_point = loaded_files[active_index]->get_atom_lines()[0].get_coordinates();
+        vector<double> max_point = min_point;
+
+        for (AtomLine al : loaded_files[active_index]->get_atom_lines()) {
+            for (int i = 0; i < 3; i++) {
+                if (al.get_coordinates()[i] < min_point[i])
+                    min_point[i] = al.get_coordinates()[i];
+                else if (al.get_coordinates()[i] > max_point[i])
+                    max_point[i] = al.get_coordinates()[i];
+            }
+        }
+
+        cout << "Minimum point: " << min_point[0] << "\t" << min_point[1] << "\t" << min_point[2] << endl <<
+            "Maximum point: " << max_point[0] << "\t" << max_point[1] << "\t" << max_point[2] << endl;
     }
     else if (command == "load_working") {
         // Load latest entry in `working_files_vector` into `loaded_files`, making it the new file to be acted upon by commands
