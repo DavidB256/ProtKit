@@ -4,7 +4,7 @@
 using namespace std;
 
 // Returns normalized version of argument `v`
-vector<double> Fncs::normalize_vector(vector<double> v) {
+vector<double> fncs::normalize_vector(std::vector<double> v) {
 	double vector_norm = 0;
 	for (double i : v)
 		vector_norm += pow(i, 2);
@@ -16,14 +16,14 @@ vector<double> Fncs::normalize_vector(vector<double> v) {
 }
 
 // Returns the vector achieved by element-wise addition of `v1` and `v2`
-vector<double> Fncs::add_vectors(vector<double> v1, vector<double> v2) {
+vector<double> fncs::add_vectors(vector<double> v1, vector<double> v2) {
 	for (unsigned int i = 0; i < v1.size(); i++)
 		v1[i] += v2[i];
 	return v1;
 }
 
 // Returns the vector achieved by element-wise subtraction of `v2` from `v1`
-vector<double> Fncs::subtract_vectors(vector<double> v1, vector<double> v2) {
+vector<double> fncs::subtract_vectors(vector<double> v1, vector<double> v2) {
 	for (unsigned int i = 0; i < v1.size(); i++)
 		v1[i] -= v2[i];
 
@@ -31,7 +31,7 @@ vector<double> Fncs::subtract_vectors(vector<double> v1, vector<double> v2) {
 }
 
 // Returns the dot product of `v1` and `v2`
-double Fncs::get_dot_product(vector<double> v1, vector<double> v2) {
+double fncs::get_dot_product(vector<double> v1, vector<double> v2) {
 	double dot_product = 0;
 	for (int i = 0; i < 3; i++) {
 		dot_product += v1[i] * v2[i];
@@ -41,7 +41,7 @@ double Fncs::get_dot_product(vector<double> v1, vector<double> v2) {
 }
 
 // Returns projection of `projectee` onto `v`
-vector<double> Fncs::get_projection(vector<double> v, vector<double> projectee) {
+vector<double> fncs::get_projection(vector<double> v, vector<double> projectee) {
 	double scalar =
 		get_dot_product(v, projectee) / get_dot_product(v, v);
 	for (double& i : v)
@@ -54,7 +54,7 @@ vector<double> Fncs::get_projection(vector<double> v, vector<double> projectee) 
 // starting index of the longest common substring (LCS) in the `s1` argument,
 // starting index of the LCS in the `s2` argument, and
 // the length of the LCS, respectively 
-vector<unsigned int> Fncs::get_longest_common_substring_indices(string s1, string s2) {
+vector<unsigned int> fncs::get_longest_common_substring_indices(string s1, string s2) {
 	// Guarantee that `s1` is not longer than `s2`
 	bool swapped = false;
 	if (s2.length() < s1.length()) {
@@ -84,7 +84,7 @@ vector<unsigned int> Fncs::get_longest_common_substring_indices(string s1, strin
 }
 
 // Returns square of distance between points represented by vectors `v1` and `v2`
-double Fncs::get_distance_squared(vector<double> v1, vector<double> v2) {
+double fncs::get_distance_squared(vector<double> v1, vector<double> v2) {
 	double distance_squared = 0;
 	for (unsigned int i = 0; i < v1.size(); i++)
 		distance_squared += pow(v1[i] - v2[i], 2);

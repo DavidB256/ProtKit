@@ -3,7 +3,8 @@
 #include <string>
 #include <sstream>
 #include "Pdb.h"
-#include "VectorFunctions.h"
+#include "Fncs.h"
+#include "Vars.h"
 using namespace std;
 
 
@@ -29,7 +30,7 @@ Pdb::Pdb(string file_name) {
         // Read each line of .pdb file into an AtomLine object that is added to `atom_lines`
         while (getline(f, line)) {
             if (line.find("ATOM") == 0) {
-                atom_name = remove_spaces_from_string(line.substr(12, 4));
+                atom_name = fncs::remove_spaces_from_string(line.substr(12, 4));
                 AA_residue = line.substr(17, 3);
                 chain = line.substr(21)[0];
                 residue_number = stoi(line.substr(22, 4));
@@ -96,12 +97,12 @@ void Pdb::write_file(string file_name) {
             << atom_lines[i].AA_residue << ' '
             << atom_lines[i].chain << string(4 - residue_number_string.length(), ' ') 
             << atom_lines[i].residue_number << string(5, ' ')
-            << convert_double_to_string_of_certain_length(atom_lines[i].coordinates[0], 7) << ' '
-            << convert_double_to_string_of_certain_length(atom_lines[i].coordinates[1], 7) << ' '
-            << convert_double_to_string_of_certain_length(atom_lines[i].coordinates[2], 7) << "  "
-            << convert_double_to_string_of_certain_length(atom_lines[i].occupancy, 4) << ' '
-            << convert_double_to_string_of_certain_length(atom_lines[i].b_factor, 5) << string(11, ' ')
-            << get_first_alphabet_character_from_string(atom_lines[i].atom_name) << endl;
+            << fncs::convert_double_to_string_of_certain_length(atom_lines[i].coordinates[0], 7) << ' '
+            << fncs::convert_double_to_string_of_certain_length(atom_lines[i].coordinates[1], 7) << ' '
+            << fncs::convert_double_to_string_of_certain_length(atom_lines[i].coordinates[2], 7) << "  "
+            << fncs::convert_double_to_string_of_certain_length(atom_lines[i].occupancy, 4) << ' '
+            << fncs::convert_double_to_string_of_certain_length(atom_lines[i].b_factor, 5) << string(11, ' ')
+            << fncs::get_first_alphabet_character_from_string(atom_lines[i].atom_name) << endl;
     }
     f << "TER" << endl;
     f.close();
@@ -158,7 +159,7 @@ vector<AtomLine> Pdb::axis_rotate(vector<double> axis, vector<double> point, dou
         neg_point[i] = -1 * point[i];
 
     // Create rotation matrix from formula found here: https://en.wikipedia.org/wiki/Rotation_matrix#Rotation_matrix_from_axis_and_angle
-    axis = normalize_vector(axis);
+    axis = fncs::normalize_vector(axis);
     double ux2 = pow(axis[0], 2);
     double uy2 = pow(axis[1], 2);
     double uz2 = pow(axis[2], 2);

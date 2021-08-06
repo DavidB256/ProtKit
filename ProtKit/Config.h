@@ -1,27 +1,26 @@
 #pragma once
 #include <fstream>
 #include <filesystem>
-using namespace std;
 
 class Config {
 public:
-	Config(string config_path) {
-        string line;
-		ifstream f(config_path);
+	Config(std::string config_path) {
+        std::string line;
+        std::ifstream f(config_path);
 
         if (f) {
-            while (getline(f, line)) {
+            while (std::getline(f, line)) {
                 // Set working directory from config file
                 if (line.find("wd=") == 0) {
                     // Handle potential error of non-existent working directory path in config file
                     try {
-                        filesystem::current_path(line.substr(3));
+                        std::filesystem::current_path(line.substr(3));
                     }
                     catch (int e) {
                         (void)e;
-                        cout << "Invalid working directory for config file." << endl <<
-                            "Assuming default working directory: " << default_working_directory << endl;
-                        filesystem::current_path(default_working_directory);
+                        std::cout << "Invalid working directory in config file." << std::endl <<
+                            "Assuming default working directory: " << default_working_directory << std::endl;
+                        std::filesystem::current_path(default_working_directory);
                     }
                 }
                 // Set name of default output file of write functions for .pdb files
@@ -32,13 +31,13 @@ public:
         }
         // Default actions taken if the config file is not found
         else {
-            cout << "Config file not found." << endl <<
-                "Assuming default wording directory: " << default_working_directory << endl;
-            filesystem::current_path(working_directory);
+            std::cout << "Config file not found." << std::endl <<
+                "Assuming default wording directory: " << default_working_directory << std::endl;
+            std::filesystem::current_path(default_working_directory);
         }
         f.close();
 	}
 
-    string default_working_directory = "C:\\Users\\Public\\";
-    string default_output_pdb = "output.pdb";
+    std::string default_working_directory = "C:\\Users\\Public\\";
+    std::string default_output_pdb = "output.pdb";
 };

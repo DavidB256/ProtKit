@@ -2,15 +2,11 @@
 #include <fstream>
 #include <string>
 #include <cmath>
-#include <vector>
 #include <stack>
 #include <filesystem>
-#include "Vars.h"
-#include "Pdb.h"
-#include "Config.h"
-#include "AtomLine.h"
 #include "Fncs.h"
 #include "Instance.h"
+#include "Vars.h"
 using namespace std;
 
 int main() {
@@ -31,7 +27,7 @@ int main() {
 
     while (true) {
         // Get user input from `cin` or loaded script file
-        line = Fncs::get_input(f);
+        line = fncs::get_input(f);
         if (line == "q" || line == "quit") {
             // Quit when asked
             break;

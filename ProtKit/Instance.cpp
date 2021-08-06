@@ -3,6 +3,7 @@
 #include <fstream>
 #include "Instance.h"
 #include "Fncs.h"
+#include "PdbFunctions.h"
 using namespace std;
 
 // Instance constructor
@@ -24,7 +25,7 @@ Instance::~Instance() {
 }
 
 void Instance::process_input(string line, ifstream& f) {
-    string command = Fncs::get_nth_word_from_string(line, 1);
+    string command = fncs::get_nth_word_from_string(line, 1);
 
     // Identify command from input and act accordingly
     if (command == "help") {
@@ -40,7 +41,7 @@ void Instance::process_input(string line, ifstream& f) {
     else if (command == "set_wd") {
         // Change the working directory, with error handling for invalid path variables
         try {
-            filesystem::current_path(Fncs::get_nth_word_from_string(line, 2));
+            filesystem::current_path(fncs::get_nth_word_from_string(line, 2));
         }
         catch (int e) {
             (void)e;
@@ -49,11 +50,11 @@ void Instance::process_input(string line, ifstream& f) {
     }
     else if (command == "s" || command == "script") {
         // Run commands from script
-        f.open(Fncs::get_nth_word_from_string(line, 2));
+        f.open(fncs::get_nth_word_from_string(line, 2));
     }
     else if (command == "load") {
         // Loads a file by name into `loaded_files` and sets `active_index` to its index value
-        string file_name = Fncs::get_nth_word_from_string(line, 2);
+        string file_name = fncs::get_nth_word_from_string(line, 2);
         if (file_name.length() < 4 || file_name.substr(file_name.length() - 4, 4) != ".pdb")
             file_name += ".pdb";
         
@@ -70,7 +71,7 @@ void Instance::process_input(string line, ifstream& f) {
         f.close();
     }
     else if (command == "print_AA") {
-        if (Fncs::get_whether_loaded_files_is_too_short(loaded_files, 1))
+        if (fncs::get_whether_loaded_files_is_too_short(loaded_files, 1))
             return;
 
         string seq = loaded_files[active_index]->get_AA_seq();
@@ -87,13 +88,13 @@ void Instance::process_input(string line, ifstream& f) {
         }
     }
     else if (command == "write_fasta") {
-        if (Fncs::get_whether_loaded_files_is_too_short(loaded_files, 1))
+        if (fncs::get_whether_loaded_files_is_too_short(loaded_files, 1))
             return;
 
-        loaded_files[active_index]->write_fasta(Fncs::get_nth_word_from_string(line, 2));
+        loaded_files[active_index]->write_fasta(fncs::get_nth_word_from_string(line, 2));
     }
     else if (command == "back") {
-        if (Fncs::get_whether_loaded_files_is_too_short(loaded_files, 1))
+        if (fncs::get_whether_loaded_files_is_too_short(loaded_files, 1))
             return;
 
         // Decrements `active_index` to point to previously-loaded file
@@ -106,7 +107,7 @@ void Instance::process_input(string line, ifstream& f) {
         }
     }
     else if (command == "forward") {
-        if (Fncs::get_whether_loaded_files_is_too_short(loaded_files, 1))
+        if (fncs::get_whether_loaded_files_is_too_short(loaded_files, 1))
             return;
 
         // Increments `active_index` to point to next-loaded file
@@ -120,7 +121,7 @@ void Instance::process_input(string line, ifstream& f) {
     }
     else if (command == "find") {
         // Sets active_index to point to file in `loaded_files` by name
-        string file_name = Fncs::get_nth_word_from_string(line, 2);
+        string file_name = fncs::get_nth_word_from_string(line, 2);
         for (unsigned int i = 0; i < loaded_files.size(); i++) {
             if (loaded_files[i]->get_name() == file_name) {
                 active_index = i;
@@ -131,7 +132,7 @@ void Instance::process_input(string line, ifstream& f) {
         cout << "File not found." << endl;
     }
     else if (command == "del_active") {
-        if (Fncs::get_whether_loaded_files_is_too_short(loaded_files, 1))
+        if (fncs::get_whether_loaded_files_is_too_short(loaded_files, 1))
             return;
 
         // Deletes active file from `loaded_files`
@@ -143,7 +144,7 @@ void Instance::process_input(string line, ifstream& f) {
         }
     }
     else if (command == "print_active") {
-        if (Fncs::get_whether_loaded_files_is_too_short(loaded_files, 1))
+        if (fncs::get_whether_loaded_files_is_too_short(loaded_files, 1))
             return;
 
         // Prints the name of the active file in `loaded_files`, if there is one
@@ -151,7 +152,7 @@ void Instance::process_input(string line, ifstream& f) {
             cout << "The active file is " << loaded_files[active_index]->get_name() << endl;
     }
     else if (command == "print_3_letter_AA_seq") {
-        if (Fncs::get_whether_loaded_files_is_too_short(loaded_files, 1))
+        if (fncs::get_whether_loaded_files_is_too_short(loaded_files, 1))
             return;
 
         // Prints AA sequence of active file with space-separated 3-letter codes
@@ -161,10 +162,10 @@ void Instance::process_input(string line, ifstream& f) {
     }
     else if (command == "write_file") {
         // Writes latest entry in `working_files_vector` to a .pdb file in `working_directory`
-        working_file->write_file(Fncs::get_nth_word_from_string(line, 2));
+        working_file->write_file(fncs::get_nth_word_from_string(line, 2));
     }
     else if (command == "self") {
-        if (Fncs::get_whether_loaded_files_is_too_short(loaded_files, 1))
+        if (fncs::get_whether_loaded_files_is_too_short(loaded_files, 1))
             return;
 
         // Appends copy of active file to latest entry in `working_files_vector`
@@ -172,26 +173,26 @@ void Instance::process_input(string line, ifstream& f) {
         working_file->append(Pdb(loaded_files[active_index]->get_atom_lines()));
     }
     else if (command == "add_vector") {
-        if (Fncs::get_whether_loaded_files_is_too_short(loaded_files, 1))
+        if (fncs::get_whether_loaded_files_is_too_short(loaded_files, 1))
             return;
 
         // Get translation vector from input
         vector<double> col_vector(3);
         for (int i = 0; i < 3; i++)
-            col_vector[i] = stod(Fncs::get_nth_word_from_string(line, i + 2));
+            col_vector[i] = stod(fncs::get_nth_word_from_string(line, i + 2));
 
         // Append translated `AtomLine` objects to `atom_lines` of latest element in `working_files_vector`
         working_file->append(Pdb(loaded_files[active_index]->add_vector(col_vector)));
     }
     else if (command == "mult_matrix") {
-        if (Fncs::get_whether_loaded_files_is_too_short(loaded_files, 1))
+        if (fncs::get_whether_loaded_files_is_too_short(loaded_files, 1))
             return;
 
         // Get matrix from input
         vector<vector<double>> sq_matrix(3, vector<double>(3));
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
-                sq_matrix[i][j] = stod(Fncs::get_nth_word_from_string(line, j + (i * 4) + 2));
+                sq_matrix[i][j] = stod(fncs::get_nth_word_from_string(line, j + (i * 4) + 2));
             }
         }
 
@@ -199,30 +200,30 @@ void Instance::process_input(string line, ifstream& f) {
         working_file->append(Pdb(loaded_files[active_index]->mult_matrix(sq_matrix)));
     }
     else if (command == "axis_rotate") {
-        if (Fncs::get_whether_loaded_files_is_too_short(loaded_files, 1))
+        if (fncs::get_whether_loaded_files_is_too_short(loaded_files, 1))
             return;
 
         // Get variables from input: axis vector, point that vector goes through, and angle of rotation
         vector<double> axis(3);
         vector<double> point(3);
         for (int i = 0; i < 3; i++) {
-            axis[i] = stod(Fncs::get_nth_word_from_string(line, i + 2));
-            point[i] = stod(Fncs::get_nth_word_from_string(line, i + 6));
+            axis[i] = stod(fncs::get_nth_word_from_string(line, i + 2));
+            point[i] = stod(fncs::get_nth_word_from_string(line, i + 6));
         }
-        double angle = stod(Fncs::get_nth_word_from_string(line, 10));
+        double angle = stod(fncs::get_nth_word_from_string(line, 10));
 
         // Append transformed `AtomLine` objects to `atom_lines` of latest element in `working_files_vector`
         working_file->append(Pdb(loaded_files[active_index]->axis_rotate(axis, point, angle)));
     }
     else if (command == "move_to") {
-        if (Fncs::get_whether_loaded_files_is_too_short(loaded_files, 1))
+        if (fncs::get_whether_loaded_files_is_too_short(loaded_files, 1))
             return;
 
         vector<double> mean_coords = loaded_files[active_index]->get_mean_atom_coords();
         // Get destination vector from input and subtract `mean_coords`, current mean location of the protein, from each entry
         vector<double> col_vector(3);
         for (int i = 0; i < 3; i++)
-            col_vector[i] = stod(Fncs::get_nth_word_from_string(line, i + 2)) - mean_coords[i];
+            col_vector[i] = stod(fncs::get_nth_word_from_string(line, i + 2)) - mean_coords[i];
 
         // Append translated `AtomLine` objects to `atom_lines` of latest element in `working_files_vector`
         working_file->append(Pdb(loaded_files[active_index]->add_vector(col_vector)));
@@ -230,7 +231,7 @@ void Instance::process_input(string line, ifstream& f) {
     else if (command == "center") {
         // Translates active protein such that its center is at the origin
         // Equivalent to "move_to 0 0 0"
-        if (Fncs::get_whether_loaded_files_is_too_short(loaded_files, 1))
+        if (fncs::get_whether_loaded_files_is_too_short(loaded_files, 1))
             return;
 
         vector<double> col_vector = loaded_files[active_index]->get_mean_atom_coords();
@@ -240,16 +241,20 @@ void Instance::process_input(string line, ifstream& f) {
         working_file->append(Pdb(loaded_files[active_index]->add_vector(col_vector)));
     }
     else if (command == "print_rmsd") {
-        if (Fncs::get_whether_loaded_files_is_too_short(loaded_files, 2))
+        if (fncs::get_whether_loaded_files_is_too_short(loaded_files, 2))
             return;
 
-        cout << Fncs::get_rmsd(loaded_files[active_index - 1], loaded_files[active_index]) << endl;
+        cout << get_rmsd(loaded_files[active_index - 1], loaded_files[active_index]) << endl;
     }
     else if (command == "print_tm_score") {
-        if (Fncs::get_whether_loaded_files_is_too_short(loaded_files, 2))
+        if (fncs::get_whether_loaded_files_is_too_short(loaded_files, 2))
             return;
 
-        cout << Fncs::get_tm_score(loaded_files[active_index - 1], loaded_files[active_index]) << endl;
+        cout << get_tm_score(loaded_files[active_index - 1], loaded_files[active_index]) << endl;
+    }
+    else if (command == "print_bounds") {
+        //vector<double> min_point = loaded_files[active_index]->get_atom_lines();
+        vector<double> max_point(3);
     }
     else if (command == "load_working") {
         // Load latest entry in `working_files_vector` into `loaded_files`, making it the new file to be acted upon by commands
