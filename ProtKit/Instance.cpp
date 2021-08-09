@@ -54,14 +54,13 @@ void Instance::process_input(string line, ifstream& f) {
     }
     else if (command == "load") {
         // Loads a file by name into `loaded_files` and sets `active_index` to its index value
-        string file_name = fncs::get_nth_word_from_string(line, 2);
-        if (file_name.length() < 4 || file_name.substr(file_name.length() - 4, 4) != ".pdb")
-            file_name += ".pdb";
+        string file_name = fncs::get_string_without_first_word(line);
+        file_name = fncs::get_string_with_appended_file_extension(file_name, "pdb");
         
         ifstream f(file_name);
         if (f) {
             loaded_files.push_back(new Pdb(file_name));
-            cout << "Loaded " << file_name << "." << endl;
+            cout << "Loaded '" << file_name << "'." << endl;
 
             active_index = loaded_files.size() - 1;
         }
@@ -88,10 +87,16 @@ void Instance::process_input(string line, ifstream& f) {
         }
     }
     else if (command == "write_fasta") {
+        // Writes .fasta file containing name and AA sequence of active file
         if (fncs::get_whether_loaded_files_is_too_short(loaded_files, 1))
             return;
 
-        loaded_files[active_index]->write_fasta(fncs::get_nth_word_from_string(line, 2));
+        string output_file_name = fncs::get_string_without_first_word(line);
+        output_file_name = fncs::get_string_with_appended_file_extension(output_file_name, "fasta");
+
+        loaded_files[active_index]->write_fasta(output_file_name);
+
+        cout << "Wrote amino acid sequence of active file to '" << output_file_name << "'." << endl;
     }
     else if (command == "back") {
         if (fncs::get_whether_loaded_files_is_too_short(loaded_files, 1))
@@ -100,7 +105,7 @@ void Instance::process_input(string line, ifstream& f) {
         // Decrements `active_index` to point to previously-loaded file
         if (active_index != 0) {
             active_index--;
-            cout << loaded_files[active_index]->get_name() << " is now active." << endl;
+            cout << "'" << loaded_files[active_index]->get_name() << "' is now active." << endl;
         }
         else {
             cout << "There is no prior file to load." << endl;
@@ -113,10 +118,10 @@ void Instance::process_input(string line, ifstream& f) {
         // Increments `active_index` to point to next-loaded file
         if (active_index != loaded_files.size() - 1) {
             active_index++;
-            cout << "Loaded " << loaded_files[active_index]->get_name() << endl;
+            cout << "'" << loaded_files[active_index]->get_name() << "' is now active." << endl;
         }
         else {
-            cout << loaded_files[active_index]->get_name() << " is now active." << endl;
+            cout << "There is no further file to load." << endl;
         }
     }
     else if (command == "find") {
@@ -125,7 +130,7 @@ void Instance::process_input(string line, ifstream& f) {
         for (unsigned int i = 0; i < loaded_files.size(); i++) {
             if (loaded_files[i]->get_name() == file_name) {
                 active_index = i;
-                cout << file_name << " is now active." << endl;
+                cout << "'" << file_name << "' is now active." << endl;
                 break;
             }
         }
@@ -137,7 +142,7 @@ void Instance::process_input(string line, ifstream& f) {
 
         // Deletes active file from `loaded_files`
         if (loaded_files.size()) {
-            cout << "Deleted " << loaded_files[active_index]->get_name() << endl;
+            cout << "Deleted '" << loaded_files[active_index]->get_name() << "'." << endl;
             loaded_files.erase(loaded_files.begin() + active_index);
             if (active_index == loaded_files.size())
                 active_index--;
@@ -149,7 +154,7 @@ void Instance::process_input(string line, ifstream& f) {
 
         // Prints the name of the active file in `loaded_files`, if there is one
         if (loaded_files.size())
-            cout << "The active file is " << loaded_files[active_index]->get_name() << endl;
+            cout << "The active file is '" << loaded_files[active_index]->get_name() << "'." << endl;
     }
     else if (command == "print_3_letter_AA_seq") {
         if (fncs::get_whether_loaded_files_is_too_short(loaded_files, 1))
@@ -160,9 +165,15 @@ void Instance::process_input(string line, ifstream& f) {
             cout << v.AA_codes_1_to_3_map[i] << " ";
         cout << endl;
     }
-    else if (command == "write_file") {
+    else if (command == "write" || command == "w") {
+        // Write `working_file` into .pdb file with given name
+        string output_file_name = fncs::get_string_without_first_word(line);
+        output_file_name = fncs::get_string_with_appended_file_extension(output_file_name, "pdb");
+
         // Writes latest entry in `working_files_vector` to a .pdb file in `working_directory`
-        working_file->write_file(fncs::get_nth_word_from_string(line, 2));
+        working_file->write_file(output_file_name);
+
+        cout << "Wrote working file to '" << output_file_name << "'." << endl;
     }
     else if (command == "self") {
         if (fncs::get_whether_loaded_files_is_too_short(loaded_files, 1))
@@ -244,13 +255,15 @@ void Instance::process_input(string line, ifstream& f) {
         if (fncs::get_whether_loaded_files_is_too_short(loaded_files, 2))
             return;
 
-        cout << get_rmsd(loaded_files[active_index - 1], loaded_files[active_index]) << endl;
+        cout << "RMSD between '" << loaded_files[active_index - 1] << "' and '" << loaded_files[active_index] << "':" << endl <<
+            get_rmsd(loaded_files[active_index - 1], loaded_files[active_index]) << endl;
     }
     else if (command == "print_tm_score") {
         if (fncs::get_whether_loaded_files_is_too_short(loaded_files, 2))
             return;
 
-        cout << get_tm_score(loaded_files[active_index - 1], loaded_files[active_index]) << endl;
+        cout << "TM-score between '" << loaded_files[active_index - 1] << "' and '" << loaded_files[active_index] << "':" << endl <<
+            get_tm_score(loaded_files[active_index - 1], loaded_files[active_index]) << endl;
     }
     else if (command == "print_bounds") {
         // Prints points of diagonally-opposite corners of minimal rectangular prism surrounding protein

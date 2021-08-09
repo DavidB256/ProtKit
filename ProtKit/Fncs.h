@@ -7,6 +7,8 @@ namespace fncs {
 	// Defined in IOFunctions.cpp
 	std::string convert_double_to_string_of_certain_length(double d, unsigned int len);
 	std::string get_nth_word_from_string(std::string s, unsigned int word_num);
+	std::string get_string_without_first_word(std::string s);
+	std::string get_string_with_appended_file_extension(std::string s, std::string extension);
 	char get_first_alphabet_character_from_string(std::string s);
 	std::string remove_spaces_from_string(std::string s);
 	std::string get_input(std::ifstream& f);

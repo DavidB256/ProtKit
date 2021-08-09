@@ -19,7 +19,7 @@ public:
 		"del_active\n"
 		"print_active\n"
 		"print_3_letter_AA_seq\n"
-		"write_file <output file_name>\n"
+		"write <output file_name>\n"
 		"self\n"
 		"add_vector <translation 3-vector>\n"
 		"mult_matrix <rotation 3x3 matrix>\n"

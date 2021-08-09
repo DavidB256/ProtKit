@@ -27,6 +27,39 @@ string fncs::get_nth_word_from_string(string s, unsigned int word_num) {
 	return return_val;
 }
 
+// Returns argument `s`, but without first word and spaces before second word, as delineated by spaces
+string fncs::get_string_without_first_word(string s) {
+	string return_val = "";
+	bool first_word_reached = false;
+	bool space_after_first_word_reached = false;
+	bool second_word_reached = false;
+	for (char i : s) {
+		if (!second_word_reached) {
+			if (!first_word_reached && i != ' ')
+				first_word_reached = true;
+			else if (first_word_reached && i == ' ')
+				space_after_first_word_reached = true;
+			else if (space_after_first_word_reached && i != ' ')
+				second_word_reached = true;
+		}
+		if (second_word_reached) {
+			return_val += i;
+		}
+	}
+
+	return return_val;
+}
+
+// Appends `extension` argument to `s` argument with '.' if `s` does not already end in '.' + `extension`
+string fncs::get_string_with_appended_file_extension(string s, string extension) {
+	string dot_extension = '.' + extension;
+	unsigned int extension_length = dot_extension.length();
+	if (s.length() < extension_length || s.substr(s.length() - extension_length, extension_length) != dot_extension)
+		s += dot_extension;
+
+	return s;
+}
+
 // Returns first character of string that is a letter of the alphabet
 char fncs::get_first_alphabet_character_from_string(string s) {
 	for (char i : s) {
