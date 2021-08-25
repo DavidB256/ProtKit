@@ -60,7 +60,7 @@ void Instance::process_input(string line, ifstream& f) {
         ifstream f(file_name);
         if (f) {
             loaded_files.push_back(new Pdb(file_name));
-            cout << "Loaded '" << file_name << "'." << endl;
+            cout << "Loaded 'ATOM' lines from '" << file_name << "'." << endl;
 
             active_index = loaded_files.size() - 1;
         }
@@ -126,7 +126,7 @@ void Instance::process_input(string line, ifstream& f) {
     }
     else if (command == "find") {
         // Sets active_index to point to file in `loaded_files` by name
-        string file_name = fncs::get_nth_word_from_string(line, 2);
+        string file_name = fncs::get_string_without_first_word(line);
         for (unsigned int i = 0; i < loaded_files.size(); i++) {
             if (loaded_files[i]->get_name() == file_name) {
                 active_index = i;

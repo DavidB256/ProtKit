@@ -27,7 +27,7 @@ Pdb::Pdb(string file_name) {
     double b_factor;
 
     if (f) {
-        // Read each line of .pdb file into an AtomLine object that is added to `atom_lines`
+        // Read each 'ATOM' line of the .pdb file into an AtomLine object that is added to `atom_lines`
         while (getline(f, line)) {
             if (line.find("ATOM") == 0) {
                 atom_name = fncs::remove_spaces_from_string(line.substr(12, 4));
@@ -39,7 +39,7 @@ Pdb::Pdb(string file_name) {
                 coordinates[2] = stod(line.substr(46, 8));
                 occupancy = stod(line.substr(54, 6));
                 b_factor = stod(line.substr(60, 6));
-                
+
                 atom_lines.push_back(AtomLine(atom_name, AA_residue, chain, residue_number, coordinates, occupancy, b_factor));
             }
         }

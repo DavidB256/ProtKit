@@ -13,6 +13,12 @@ public:
 		b_factor = bf;
 	}
 
+	AtomLine(std::string a, std::string aa, std::vector<double> cs) {
+		atom_name = a;
+		AA_residue = aa;
+		coordinates = cs;
+	}
+
 	std::vector<double> get_coordinates() { return coordinates; };
 
 	void add_vector(std::vector<double> col_vector) {

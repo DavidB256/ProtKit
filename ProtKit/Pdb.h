@@ -4,6 +4,7 @@
 
 class Pdb {
 public:
+	// Constructor for creating object from file name and line type
 	Pdb(std::string file_name);
 	// Constructor for creating object from `AtomLine` vector
 	Pdb(std::vector<AtomLine> al) { atom_lines = al; load_AA_seq(); };
