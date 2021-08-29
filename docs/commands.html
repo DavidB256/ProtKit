@@ -1,0 +1,76 @@
+---
+layout: default
+title: Commands
+---
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>ProtKit</title>
+    <link href="style.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <p><a href="index.html">Return to home page.</a></p>
+    <h4 id="quit">quit</h4>
+    <p>Quits the current instance of ProtKit, closing the console and erasing all instance data.</p>
+    <p>Abbreviated name: q</p>
+    <h4 id="reset">reset</h4>
+    <p>Resets current instance by deleting, then reinitializing, all variables.</p>
+    <p>Abbreviated name: re</p>
+		<h4 id="reset_working">reset_working</h4>
+    <p>Resets working file by deleting, then reinitializing it.</p>
+    <p>Abbreviated name: rw</p>
+		<h4 id="set_wd">set_wd &ltpath&gt</h4>
+    <p>Sets the current working directory, from which files are loaded and to which files are be written, to the given "path" argument. Recall that the working directory can be set in config.txt and defaults to "C:\\Users\\Public\\".</p>
+		<h4 id="script">script &ltinput file&gt</h4>
+    <p>Runs commands written in file with name "input file". See scri</p>
+    <p>Abbreviated name: s</p>
+		<h4 id="load">load &ltinput file&gt</h4>
+    <p>Loads "ATOM" lines from .pdb file with name "input file". If no file extension is given, it will add ".pdb" to the end of "input file".</p>
+		<h4 id="load_het">load_het &ltinput file&gt</h4>
+	<p>Loads "HETATM" lines from .pdb file with name "input file". If no file extension is given, it will add ".pdb" to the end of "input file".</p>
+		<h4 id="print_AA">print_AA</h4>
+    <p>Prints the amino acid sequence of the active file followed by its length.</p>
+		<h4 id="print_loaded">print_loaded</h4>
+    <p>Prints the names of all loaded files, in order, and indicates which file is active.</p>
+		<h4 id="write_fasta">write_fasta &ltoutput file&gt</h4>
+    <p>Writes .fasta file containing name and amino acid sequence of active file. For details on .fasta files, see the Zhang Lab's <a href="https://zhanggroup.org/FASTA/">"What is FASTA format?"</a> page.</p>
+		<h4 id="back">back</h4>
+    <p>Sets the active file to the file loaded before the current active file.</p>
+		<h4 id="forward">forward</h4>
+    <p>Sets the active file to the file loaded after the current active file.</p>
+		<h4 id="find">find &ltfile&gt</h4>
+	<p>Sets the active file to the first loaded file with name "file", if there is one.</p>
+		<h4 id="del_active">del_active</h4>
+    <p>Removes active file from list of loaded files.</p>
+		<h4 id="print_active">print_active</h4>
+    <p>Prints name of active file.</p>
+		<h4 id="print_3_letter_AA_seq">print_3_letter_AA_seq</h4>
+    <p>Prints amino acid sequence of active file, but with single-letter codes translated into respective space-separated three-letter codes.</p>
+		<h4 id="write">write &ltoutput file&gt</h4>
+    <p>Writes working file into .pdb file with name "output file". If "output file" does not have a file extension, it is automatically assigned the ".pdb" extension.</p>
+	<p>Abbreviated name: w</p>
+		<h4 id="self">self</h4>
+    <p>Writes active file into working file. Equivalent to "add_vector 0 0 0" or "mult_matrix 1 0 0 / 0 1 0 / 0 0 1".</p>
+		<h4 id="add_vector">add_vector &lttranslation 3-vector&gt</h4>
+    <p>Writes active file into working file, but with all atoms translated by adding "translation 3-vector" to their coordinates. "translation 3-vector" should be given as 3 space-separated numbers, e.g. "add_vector x y z".</p>
+		<h4 id="mult_matrix">mult_matrix &ltrotation 3x3 matrix&gt</h4>
+    <p>Writes active file into working file, but with all atoms transformed by left-multiplying their coordinates by "rotation 3x3 matrix". "rotation 3x3 matrix" should be given as 3 lines of 3 space-separated numbers, separated with " / ", e.g. "mult_matrix x1 y1 z1 / x2 y2 z2 / x3 y3 z3".</p>
+		<h4 id="axis_rotate">axis_rotate &ltaxis 3-vector, point 3-vector, angle&gt</h4>
+	<p>Writes active file into working file, but with all atoms transformed by rotating "angle" radians around the axis parallel to "axis 3-vector" that goes through the point "point 3-vector". The three arguments should be separated with " / ", e.g. "axis_rotate x1 y1 z1 / x2 y2 z2 / a".</p>
+		<h4 id="move_to">move_to &ltdestination 3-vector&gt</h4>
+    <p>Writes active file into working file, but with its atoms translated such that the mean position of all of its atoms is at "destination 3-vector". "destination 3-vector" should be given as 3 space-separated numbers, e.g. "move_to x y z".</p>
+		<h4 id="center">center</h4>
+    <p>Writes active file into working file, but with its atoms translated such that the mean position of all of its atoms is at the origin. Equivlanet to "move_to 0 0 0".</p>
+		<h4 id="print_rmsd">print_rmsd</h4>
+    <p>Prints root-mean-square deviation (RMSD) between the aligned alpha-carbons of the active file and the file loaded before the active file, in Angstroms. Greater RMSD values indicate that the two proteins differ more in their structures. For details on RMSD calculation and interpretation, see Wikipedia's <a href="https://en.wikipedia.org/wiki/Root-mean-square_deviation_of_atomic_positions""Root-mean-square deviation of atomic positions" article.</p>
+		<h4 id="print_tm_score">print_tm_score</h4>
+    <p>Prints template modeling score (TM-score) between the aligned alpha-carbons of the active file and the file loaded before the active file, in Angstroms, using the prior file as the target. Template modeling score takes on values between 0 and 1, with greater values indicating greater structural similarity. Note that TM-score is generally considered to be a better alternative to RMSD because it is less susceptible being skewed by large single-bond angle deviations. For details on TM-score calculation and interpretation, see Wikipedia's <a href="https://en.wikipedia.org/wiki/Template_modeling_score">"Template modeling score"</a> page.</p>
+		<h4 id="load_working">load_working</h4>
+    <p>Loads the working file into the list of loaded files, giving it a placeholder name. Used for working with modified or combined protein structures without having to circuitously use "write <name>" followed by "load <name>".</p>
+		<h4 id="print_bounds">print_bounds</h4>
+    <p>Prints the coordinates of the points of opposite corners of the minimal rectangular prism that bounds the protein in the active file.</p>
+  </body>
+</html>

@@ -9,21 +9,28 @@ title: Home
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
     <title>ProtKit</title>
+    <link href="style.css" rel="stylesheet" type="text/css" />
   </head>
   <body>
-    <h1>ProtKit v0.10</h1>
+    <h1>ProtKit v1.0</h1>
     <p>By David Bass</p>
-    <h3>Welcome to ProtKit!</h3>
-    <p>ProtKit is a suite of bioinformatics tools for working with .pdb files. It was created by David Bass for the 2021 Virginia iGEM team.</p>
-    <h3>Why ProtKit?</h3>
-    <p>ProtKit was created as an open-source tool to grant structural biologists greater control over the files that they work with. It brings a number of utilities together into one user-friendly program.</p>
-    <h3>Download</h3>
-    <ul>
-      <li><a href="https://github.com/DavidB256/ProtKit/releases/tag/v0.10">ProtKit v0.10 (7 July 2021)</a></li>
-    </ul>
-    <h3>Details</h3>
-    <p>ProtKit is written in C++17.</p>
-    <h3><a href="docs/documentation">Documentation</a></h3>
-    <h3><a href="docs/examples">Examples</a></h3>
+    <h2>Welcome to ProtKit!</h2>
+    <p>ProtKit is a suite of bioinformatics tools for working with .pdb files created by David Bass for the 2021 Virginia iGEM team. ProtKit is written in C++17 and has support for Windows.</p>
+    <h2>Why ProtKit?</h2>
+    <p>ProtKit was created as an open-source tool to grant structural biologists greater control over the files that they work with. It brings a number of utilities together into one user-friendly, command-line program.</p>
+    <h2><a="https://github.com/DavidB256/ProtKit/releases">Download</a></h2>
+    <h2>How to use ProtKit</h2>
+    <p>See the full list of ProtKit commands <a href="docs/commands.html">here</a>.</p>
+    <h4 id="running">Running ProtKit</h4>
+	<p>ProtKit can downloaded as a .exe file from the <a href="https://github.com/DavidB256/ProtKit/releases">"Releases"</a> page of this repository. ProtKit.exe should be stored in the same folder as a file titled "config.txt" that stores the path of the working directory and the default file name used by the "load_working" commands. See the <a href="https://github.com/DavidB256/ProtKit/blob/main/ProtKit/config.txt">example config.txt</a> for syntax. If no config file is present, ProtKit will default to "C:/Users/Public/" for the working directory and "output.pdb" for the default file name.</p>
+	<p>When opened, ProtKit will appear as a black command-line window. <a href="docs/commands.html">Commands</a> can be typed directly into the window upon startup.</p>
+    <h4 id="loading">Loading files</h4>
+	<p>The first thing to do with ProtKit is to load in .pdb files from your working directory. Use <a href="docs/commands.html#load>"load &ltinput file&gt"</a> to place a file at the end of the loaded files vector. Upon loading a file, it will become "active." The active file can be changed to previously-loaded files in the loaded files vector with the <a href="docs/commands.html#forward">forward</a>, <a href="docs/commands.html#back">back</a>, and <a href="docs/commands.html#find">find</a> commands. The working file, which will be discussed in the next section, can be added to the end of the loaded files vector with the <a href="docs/commands.html#load_working">load_working</a> command.</p>
+    <h4 id="working">Working with files</h4>
+	The majority of ProtKit's commands exist to manipulate loaded .pdb files.
+    <h4 id="scripts">Running scripts</h4>
+	<p>All ProtKit commands can also be run from pre-written scripts. To use a script, type commands (with one command per line) into a .txt file. The script file can then be renamed with any extension, as can be seen with our use of the .t extension in our <a href="https://github.com/DavidB256/ProtKit/tree/main/examples">examples</a>.</p>
+    <h4 id="viewing">Viewing files</h4>
+	<p>To view .pdb files produced with ProtKit, we recommend using <a href="https://nglviewer.org/ngl/">NGL Viewer's web app</a> or <a href="https://pymol.org/2/">PyMOL</a>.
   </body>
 </html>
